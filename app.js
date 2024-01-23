@@ -10,7 +10,7 @@ const axios = require('axios');
  * @returns true if access token was found in localStorage
  */
 async function loadStoredAccessToken(store, req) {
-    const access = await store.getItem('access');
+    const access = await store.getItem(await req.getEnvironment().getEnvironmentId());
     if (access) {
         const accessData = JSON.parse(access);
         const now = new Date().getTime();
@@ -106,13 +106,15 @@ module.exports.requestHooks = [
                     'Authorization': `Bearer ${jwt}`
                 }}).then(res => res.data) ;
 
-            store.setItem('access', JSON.stringify(res));
+            // Store the access object with the environment id as key, since it differs
+            // from environment to environment
+            store.setItem(await req.getEnvironment().getEnvironmentId(), JSON.stringify(res));
             req.setHeader('Authorization', `Bearer ${res.access_token}`);
         }
         catch (e) {
             console.error(e);
             // Clear storage to start from the begining, if an error has occured
-            await store.removeItem('access');
+            await store.removeItem(await req.getEnvironment().getEnvironmentId());
         }
     }
 ];
