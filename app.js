@@ -88,6 +88,11 @@ module.exports.requestHooks = [
         const privateKeyBase64 = req.getEnvironmentVariable('auth-jws-private-key');
         const certificateBase64 = req.getEnvironmentVariable('auth-jws-certificate');
 
+        if (req.getHeader('disable-auth-jws')) {
+            console.log('disable-auth-jws header has been set');
+            return;
+        }
+
         if (!audience || !subject || !accessTokenURL || !privateKeyBase64 || !certificateBase64) {
             console.log('auth-jws is not configured');
             return;
