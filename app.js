@@ -88,7 +88,7 @@ module.exports.requestHooks = [
         const privateKeyBase64 = req.getEnvironmentVariable('auth-jws-private-key');
         const certificateBase64 = req.getEnvironmentVariable('auth-jws-certificate');
 
-        if (req.getHeader('disable-auth-jws')) {
+        if (req.getHeader('X-auth-jws-disable')) {
             console.log('disable-auth-jws header has been set');
             return;
         }
